@@ -1,7 +1,7 @@
 //Jeff Chastine, test if GLUT is setup properly.
 #include <Windows.h>
-#include <GL\glew.h>
-#include <GL\freeglut.h>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 #include <iostream>
 
 using namespace std;

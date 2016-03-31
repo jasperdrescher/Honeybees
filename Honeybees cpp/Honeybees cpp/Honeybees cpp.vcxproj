@@ -75,10 +75,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\jaspe\Downloads\Glew and Glut\glew-1.11.0\include;C:\Users\jaspe\Downloads\Glew and Glut\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Polymelon\Documents\Github\Honeybees\Honeybees cpp\freeglut\include;D:\Polymelon\Documents\Github\Honeybees\Honeybees cpp\glew-1.11.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\jaspe\Downloads\Glew and Glut\glew-1.11.0\lib;C:\Users\jaspe\Downloads\Glew and Glut\freeglut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Polymelon\Documents\Github\Honeybees\Honeybees cpp\glew-1.11.0\lib;D:\Polymelon\Documents\Github\Honeybees\Honeybees cpp\freeglut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -87,7 +87,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>D:\Polymelon\Documents\Github\Honeybees\Honeybees cpp\freeglut\include;D:\Polymelon\Documents\Github\Honeybees\Honeybees cpp\glew-1.11.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Polymelon\Documents\Github\Honeybees\Honeybees cpp\freeglut\lib;D:\Polymelon\Documents\Github\Honeybees\Honeybees cpp\glew-1.11.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
