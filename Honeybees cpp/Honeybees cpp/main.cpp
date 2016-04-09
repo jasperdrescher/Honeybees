@@ -3,50 +3,39 @@
 #include <GL/freeglut.h>
 #include <iostream>
 
-void changeViewPort(int w, int h)
-{
-	//Change the Viewport to a editable width and height
-	glViewport(0, 0, w, h);
-}
-
-void setup() {
-	//Set the background color to grey
-	glClearColor(0.863, 0.863, 0.863, 1.0f);
-}
-
-void drawHexagon(float x, float y, float size) {
-	glBegin(GL_TRIANGLES);
-	glVertex2f((-0.5f*size) + x, (-0.5f*size) + y);
-	glVertex2f((0.0f*size) + x, (0.5f*size) + y);
-	glVertex2f((0.5f*size) + x, (-0.5f*size) + y);
-	//glEnd();
-}
-
-void render() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void display(void) {
+	/* Set background color (green) */
+	glClearColor(0.565, 0.933, 0.565, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	/* Set drawing color */
+	glColor3d(0.957, 0.643, 0.376);
+	/* Tell OpenGL your intentions */
+	glBegin(GL_POLYGON);
+	/* Set the vertices */
+	glVertex2d(-0.5, 0.5);
+	glVertex2d(-0.5, -0.5);
+	glVertex2d(0, -0.8);
+	glVertex2d(0.5, -0.5);
+	glVertex2d(0.5, 0.5);
+	glVertex2d(0, 0.8);
+	/* Done making polygon */
+	glEnd();
+	/* Clear screen and draw */
 	glutSwapBuffers();
-	glLoadIdentity();
-	drawHexagon(-.5f, 0.0f, 1.0f);
-	drawHexagon(.5f, 0.0f, 1.0f);
 }
 
-
-int main(int argc, char* argv[]) {
+int main(int argc, char **argv)
+{
+	/* Initialize GLUT */
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+	/* Window Creation */
 	glutInitWindowSize(1280, 720);
+	glutInitWindowPosition(200, 100);
 	glutCreateWindow("Catch the honey");
-	glutReshapeFunc(changeViewPort);
-	glutDisplayFunc(render);
-
-	setup();
-
-	GLenum err = glewInit();
-	if (GLEW_OK != err) {
-		fprintf(stderr, "GLEW error");
-		return 1;
-	}
-
+	/* When the display needs redrawing... */
+	glutDisplayFunc(display);
+	/* Continue until user quits */
 	glutMainLoop();
 	return 0;
 }
