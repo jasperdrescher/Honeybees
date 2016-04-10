@@ -1,7 +1,18 @@
+/*
+Do I need to have a float in a float parameter?
+Why is the randomFloat function updated after every interaction and how do I fix it?
+*/
 #include <Windows.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <iostream>
+
+float randomFloat(float a, float b) {
+	float random = ((float)rand()) / (float)RAND_MAX;
+	float diff = b - a;
+	float r = random * diff;
+	return a + r;
+}
 
 void drawHexagon(float x, float y, float size) {
 	/* Set drawing color (RGBA)*/
@@ -23,7 +34,7 @@ void display(void) {
 	glClearColor(0.565, 0.933, 0.565, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	/* draw the honey (x,y,size)*/
-	drawHexagon(-0.5f, -0.4f, 0.5f);
+	drawHexagon(randomFloat(0.0f, 1.0f), -0.4f, 0.5f);
 	drawHexagon(0.5f, 0.4f, 0.7f);
 	/* Clear screen and draw */
 	glutSwapBuffers();
