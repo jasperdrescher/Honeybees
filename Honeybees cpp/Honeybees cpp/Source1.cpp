@@ -1,5 +1,6 @@
 #include <math.h>
 #include <cstdlib>
+#include <Windows.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <iostream>
@@ -105,7 +106,7 @@ void mouse(int btn, int state, int x, int y) {
 
 void move() {
 	dis.x = mouseCoords.x - pos.x;
-	dis.y - mouseCoords.y - pos.y;
+	dis.y = mouseCoords.y - pos.y;
 
 	if (sqrt(dis.y*dis.y + dis.x*dis.x) < speed) {
 		pos.x = mouseCoords.x;
@@ -146,7 +147,6 @@ void init(void) {
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	init();
-	//glutPostRedisplay();
 	glutMainLoop();
 	return 0;
 }
