@@ -18,16 +18,10 @@
     <ClCompile Include="test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rotatingexample.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source1.cpp">
+    <ClCompile Include="mousecontroller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
