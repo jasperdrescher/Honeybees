@@ -1,3 +1,8 @@
+//Block movement when colliding with the border / lines.
+//Draw more hexagons within the borders.
+//Destroy hexagons on collision with the player.
+//Add bitmap sprite as player (bee).
+//Add an enemy sprite which moves across the screen and destroy player on collision.
 #include <math.h>
 #include <cstdlib>
 #include <Windows.h>
@@ -33,6 +38,16 @@ void drawHexagon(float x, float y, float size) {
    	glVertex2d(0 * size + x, 0.8 * size + y);
 	glEnd();
    	//Done making polygon
+}
+
+void drawBorders(float size) {
+	glColor3d(0.957, 0.643, 0.376);
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(-1 * size, 1 * size);
+	glVertex2f(1 * size, 1 * size);
+	glVertex2f(1 * size, -1 * size);
+	glVertex2f(-1 * size, -1 * size);
+	glEnd();
 }
    
 void setupHexagons() {
@@ -81,6 +96,7 @@ void display(void) {
    	for (int hexagonCount = 0; hexagonCount < 6; hexagonCount++) {
    		drawHexagon(currentHexagonPos[hexagonCount][0], currentHexagonPos[hexagonCount][1], 0.2f);
    	}
+	drawBorders(4);
 	drawPlayer(cameraPosition[0], cameraPosition[1], 0.2f);
 	//Clear screen and draw
    	glutSwapBuffers();
