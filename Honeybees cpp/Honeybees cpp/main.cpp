@@ -3,6 +3,7 @@
 //Destroy hexagons on collision with the player.
 //Add bitmap sprite as player (bee).
 //Add an enemy sprite which moves across the screen and destroy player on collision.
+// OPTIONAL Set proper screen to draw squares instead of rectangles.
 
 #include <math.h>
 #include <cstdlib>
@@ -15,8 +16,10 @@
 #define PLAYERSIZE 0.2f
 #define PLAYFIELDSIZE 4.0f
 #define CAMERAMOVESPEED 0.1f
+#define HEXAGONCOUNT 21
+#define HEXAGONSIZE 0.2f
 
-float currentHexagonPos[6][2];
+float currentHexagonPos[HEXAGONCOUNT][2];
 
 volatile float cameraPosition[2] = { 0,0 };
 
@@ -54,10 +57,10 @@ void drawBorders() {
 }
    
 void setupHexagons() {
-   	for (int hexagonCount = 0; hexagonCount < 6; hexagonCount++)
+   	for (int hexagonCount = 0; hexagonCount < HEXAGONCOUNT; hexagonCount++)
    	{
-   		currentHexagonPos[hexagonCount][0] = randomFloat(-1.0f, 1.0f);
-   		currentHexagonPos[hexagonCount][1] = randomFloat(-1.0f, 1.0f);
+   		currentHexagonPos[hexagonCount][0] = randomFloat(-PLAYFIELDSIZE + HEXAGONSIZE, PLAYFIELDSIZE - HEXAGONSIZE);
+   		currentHexagonPos[hexagonCount][1] = randomFloat(-PLAYFIELDSIZE + HEXAGONSIZE, PLAYFIELDSIZE - HEXAGONSIZE);
    	}
 }
    
@@ -69,8 +72,8 @@ bool doesCollide(float hexagon1[], float hexagon2[]) {
 }
 
 void updateHexagons() {
-   	for (int hexagonOuter = 0; hexagonOuter < 5; hexagonOuter++) {
-   		for (int hexagonInner = hexagonOuter + 1; hexagonInner < 6; hexagonInner++) {
+   	for (int hexagonOuter = 0; hexagonOuter < HEXAGONCOUNT - 1; hexagonOuter++) {
+   		for (int hexagonInner = hexagonOuter + 1; hexagonInner < HEXAGONCOUNT; hexagonInner++) {
    			if (doesCollide(currentHexagonPos[hexagonOuter], currentHexagonPos[hexagonInner])) {
    				currentHexagonPos[hexagonInner][0] = randomFloat(-1.0f, 1.0f);
    				currentHexagonPos[hexagonInner][1] = randomFloat(-1.0f, 1.0f);				
@@ -96,8 +99,8 @@ void display(void) {
    	glClear(GL_COLOR_BUFFER_BIT);
    
    	//draw the honey (x,y,size)
-   	for (int hexagonCount = 0; hexagonCount < 6; hexagonCount++) {
-   		drawHexagon(currentHexagonPos[hexagonCount][0], currentHexagonPos[hexagonCount][1], 0.2f);
+   	for (int hexagonCount = 0; hexagonCount < HEXAGONCOUNT; hexagonCount++) {
+   		drawHexagon(currentHexagonPos[hexagonCount][0], currentHexagonPos[hexagonCount][1], HEXAGONSIZE);
    	}
 	drawBorders();
 	drawPlayer(cameraPosition[0], cameraPosition[1]);
