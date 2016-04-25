@@ -3,7 +3,8 @@
 // DONE Destroy hexagons on collision with the player.
 //Add bitmap sprite as player (bee).
 //Add an enemy sprite which moves across the screen and destroy player on collision.
-//Increase playersize by every destroyed hexagon.
+// DONE Increase playersize by every destroyed hexagon.
+//Draw text to display playerScore.
 // OPTIONAL Set proper screen to draw squares instead of rectangles.
 
 #include <math.h>
@@ -14,12 +15,13 @@
 #include <iostream>
 #include <stdlib.h>
 
-#define PLAYERSIZE 0.2f
+#define PLAYERSIZE (0.2f + playerScore / 20.0f)
 #define PLAYFIELDSIZE 4.0f
 #define CAMERAMOVESPEED 0.1f
 #define HEXAGONCOUNT 21
 #define HEXAGONSIZE 0.2f
 
+float playerScore = 0.0f;
 float currentHexagonPos[HEXAGONCOUNT][2];
 
 float cameraPosition[2] = { 0,0 };
@@ -88,6 +90,7 @@ void checkPlayerCollision() {
 		if (doesCollide(cameraPosition, currentHexagonPos[hexagonIndex], (HEXAGONSIZE + PLAYERSIZE) / 2)) {
 			currentHexagonPos[hexagonIndex][0] = randomFloat(-PLAYFIELDSIZE + HEXAGONSIZE, PLAYFIELDSIZE - HEXAGONSIZE);
 			currentHexagonPos[hexagonIndex][1] = randomFloat(-PLAYFIELDSIZE + HEXAGONSIZE, PLAYFIELDSIZE - HEXAGONSIZE);
+			playerScore++;
 		}
 	}
 }
