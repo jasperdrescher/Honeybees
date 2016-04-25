@@ -1,8 +1,9 @@
-//Block movement when colliding with the border / lines.
+// DONE Block movement when colliding with the border / lines.
 //Draw more hexagons within the borders.
 //Destroy hexagons on collision with the player.
 //Add bitmap sprite as player (bee).
 //Add an enemy sprite which moves across the screen and destroy player on collision.
+
 #include <math.h>
 #include <cstdlib>
 #include <Windows.h>
@@ -10,13 +11,15 @@
 #include <GL/freeglut.h>
 #include <iostream>
 #include <stdlib.h>
- 
+
+#define PLAYERSIZE 0.2f
+#define PLAYFIELDSIZE 4.0f
+#define CAMERAMOVESPEED 0.1f
+
 float currentHexagonPos[6][2];
 
 volatile float cameraPosition[2] = { 0,0 };
-float cameraMoveSpeed = 0.1;
 
-   
 float randomFloat(float a, float b) {
    	float random = ((float)rand() / (float)RAND_MAX);
    	float diff = b - a;
@@ -40,13 +43,13 @@ void drawHexagon(float x, float y, float size) {
    	//Done making polygon
 }
 
-void drawBorders(float size) {
+void drawBorders() {
 	glColor3d(0.957, 0.643, 0.376);
 	glBegin(GL_LINE_LOOP);
-	glVertex2f(-1 * size, 1 * size);
-	glVertex2f(1 * size, 1 * size);
-	glVertex2f(1 * size, -1 * size);
-	glVertex2f(-1 * size, -1 * size);
+	glVertex2f(-PLAYFIELDSIZE, PLAYFIELDSIZE);
+	glVertex2f(PLAYFIELDSIZE, PLAYFIELDSIZE);
+	glVertex2f(PLAYFIELDSIZE, -PLAYFIELDSIZE);
+	glVertex2f(-PLAYFIELDSIZE, -PLAYFIELDSIZE);
 	glEnd();
 }
    
@@ -64,7 +67,7 @@ bool doesCollide(float hexagon1[], float hexagon2[]) {
    	float distance = sqrtf((diffX * diffX) + (diffY * diffY));
    	return distance < 0.2f;
 }
-   
+
 void updateHexagons() {
    	for (int hexagonOuter = 0; hexagonOuter < 5; hexagonOuter++) {
    		for (int hexagonInner = hexagonOuter + 1; hexagonInner < 6; hexagonInner++) {
@@ -76,12 +79,12 @@ void updateHexagons() {
    	}
 }
   
-void drawPlayer(float x, float y, float size) {
+void drawPlayer(float x, float y) {
 	 glBegin(GL_POLYGON);
-	 glVertex2d(x - (size / 2), y + (size / 2));
-	 glVertex2d(x + (size / 2), y + (size / 2));
-	 glVertex2d(x + (size / 2), y - (size / 2));
-	 glVertex2d(x - (size / 2), y - (size / 2));
+	 glVertex2d(x - (PLAYERSIZE / 2), y + (PLAYERSIZE / 2));
+	 glVertex2d(x + (PLAYERSIZE / 2), y + (PLAYERSIZE / 2));
+	 glVertex2d(x + (PLAYERSIZE / 2), y - (PLAYERSIZE / 2));
+	 glVertex2d(x - (PLAYERSIZE / 2), y - (PLAYERSIZE / 2));
 	 glEnd();
 }
 void display(void) {
@@ -96,8 +99,8 @@ void display(void) {
    	for (int hexagonCount = 0; hexagonCount < 6; hexagonCount++) {
    		drawHexagon(currentHexagonPos[hexagonCount][0], currentHexagonPos[hexagonCount][1], 0.2f);
    	}
-	drawBorders(4);
-	drawPlayer(cameraPosition[0], cameraPosition[1], 0.2f);
+	drawBorders();
+	drawPlayer(cameraPosition[0], cameraPosition[1]);
 	//Clear screen and draw
    	glutSwapBuffers();
 	glutPostRedisplay();
@@ -106,21 +109,28 @@ void display(void) {
 void keyboardFunc(unsigned char key, int x, int y) {
 	 switch (key)
 	 {
-	 case 'a':
-		 cameraPosition[0] += cameraMoveSpeed;
-		 break;
+		case 'a':
+			 cameraPosition[0] += CAMERAMOVESPEED;
+			 break;
 		case 'd':
-			 cameraPosition[0] -= cameraMoveSpeed;
-		 break;
-		 case 'w':
-			 cameraPosition[1] += cameraMoveSpeed;
+			 cameraPosition[0] -= CAMERAMOVESPEED;
+			 break;
+		case 'w':
+			 cameraPosition[1] += CAMERAMOVESPEED;
 			 break;
 		case 's':
-			 cameraPosition[1] -= cameraMoveSpeed;
-				 break;
-	 default:
-		 break;
+			 cameraPosition[1] -= CAMERAMOVESPEED;
+			 break;
+		 default:
+			 break;
 	 }
+	 // if (cameraPositon[0] > PLAYFIELDSIZE) { cameraPosition[0] = PLAYFIELDSIZE; }
+	 //Keep the player inside the drawBorders / boundary.
+	 float halfPlayerSize = PLAYERSIZE / 2.0f;
+	 cameraPosition[0] = (cameraPosition[0] > PLAYFIELDSIZE - halfPlayerSize) ? PLAYFIELDSIZE - halfPlayerSize : cameraPosition[0];
+	 cameraPosition[0] = (cameraPosition[0] < -PLAYFIELDSIZE + halfPlayerSize) ? -PLAYFIELDSIZE + halfPlayerSize : cameraPosition[0];
+	 cameraPosition[1] = (cameraPosition[1] > PLAYFIELDSIZE - halfPlayerSize) ? PLAYFIELDSIZE - halfPlayerSize : cameraPosition[1];
+	 cameraPosition[1] = (cameraPosition[1] < -PLAYFIELDSIZE + halfPlayerSize) ? -PLAYFIELDSIZE + halfPlayerSize : cameraPosition[1];
 };
 
 int main(int argc, char **argv) {
