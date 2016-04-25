@@ -1,8 +1,9 @@
 // DONE Block movement when colliding with the border / lines.
-//Draw more hexagons within the borders.
-//Destroy hexagons on collision with the player.
+// DONE Draw more hexagons within the borders.
+// DONE Destroy hexagons on collision with the player.
 //Add bitmap sprite as player (bee).
 //Add an enemy sprite which moves across the screen and destroy player on collision.
+//Increase playersize by every destroyed hexagon.
 // OPTIONAL Set proper screen to draw squares instead of rectangles.
 
 #include <math.h>
@@ -21,7 +22,7 @@
 
 float currentHexagonPos[HEXAGONCOUNT][2];
 
-volatile float cameraPosition[2] = { 0,0 };
+float cameraPosition[2] = { 0,0 };
 
 float randomFloat(float a, float b) {
    	float random = ((float)rand() / (float)RAND_MAX);
@@ -64,22 +65,31 @@ void setupHexagons() {
    	}
 }
    
-bool doesCollide(float hexagon1[], float hexagon2[]) {
-   	float diffX = hexagon1[0] - hexagon2[0];
-   	float diffY = hexagon1[1] - hexagon2[1];
+bool doesCollide(float item1[], float item2[], float size) {
+   	float diffX = item1[0] - item2[0];
+   	float diffY = item1[1] - item2[1];
    	float distance = sqrtf((diffX * diffX) + (diffY * diffY));
-   	return distance < 0.2f;
+   	return distance < size;
 }
 
 void updateHexagons() {
    	for (int hexagonOuter = 0; hexagonOuter < HEXAGONCOUNT - 1; hexagonOuter++) {
    		for (int hexagonInner = hexagonOuter + 1; hexagonInner < HEXAGONCOUNT; hexagonInner++) {
-   			if (doesCollide(currentHexagonPos[hexagonOuter], currentHexagonPos[hexagonInner])) {
-   				currentHexagonPos[hexagonInner][0] = randomFloat(-1.0f, 1.0f);
-   				currentHexagonPos[hexagonInner][1] = randomFloat(-1.0f, 1.0f);				
+   			if (doesCollide(currentHexagonPos[hexagonOuter], currentHexagonPos[hexagonInner], HEXAGONSIZE)) {
+				currentHexagonPos[hexagonInner][0] = randomFloat(-PLAYFIELDSIZE + HEXAGONSIZE, PLAYFIELDSIZE - HEXAGONSIZE);
+				currentHexagonPos[hexagonInner][1] = randomFloat(-PLAYFIELDSIZE + HEXAGONSIZE, PLAYFIELDSIZE - HEXAGONSIZE);
    			}
    		}
    	}
+}
+
+void checkPlayerCollision() {
+	for (int hexagonIndex = 0; hexagonIndex < HEXAGONCOUNT; hexagonIndex++) {
+		if (doesCollide(cameraPosition, currentHexagonPos[hexagonIndex], (HEXAGONSIZE + PLAYERSIZE) / 2)) {
+			currentHexagonPos[hexagonIndex][0] = randomFloat(-PLAYFIELDSIZE + HEXAGONSIZE, PLAYFIELDSIZE - HEXAGONSIZE);
+			currentHexagonPos[hexagonIndex][1] = randomFloat(-PLAYFIELDSIZE + HEXAGONSIZE, PLAYFIELDSIZE - HEXAGONSIZE);
+		}
+	}
 }
   
 void drawPlayer(float x, float y) {
@@ -94,6 +104,7 @@ void display(void) {
 	glLoadIdentity();
 	gluLookAt(cameraPosition[0], cameraPosition[1], -1, cameraPosition[0], cameraPosition[1], 0, 0.0, 1.0, 0.0);
    	updateHexagons();
+	checkPlayerCollision();
 	//Set background color (RGBA)
    	glClearColor(0.565, 0.933, 0.565, 0);
    	glClear(GL_COLOR_BUFFER_BIT);
