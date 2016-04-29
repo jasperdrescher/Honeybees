@@ -1,10 +1,10 @@
 // DONE Block movement when colliding with the border / lines.
 // DONE Draw more hexagons within the borders.
 // DONE Destroy hexagons on collision with the player.
-//Add bitmap sprite as player (bee).
-//Add an enemy sprite which moves across the screen and destroy player on collision.
+// DONE Add an enemy sprite which moves across the screen and destroy player on collision.
 // DONE Increase playersize by every destroyed hexagon.
 //Draw text to display playerScore.
+// OPTIONAL Add bitmap sprite as player (bee).
 // OPTIONAL Set proper screen to draw squares instead of rectangles.
 
 #include <math.h>
@@ -15,7 +15,7 @@
 #include <iostream>
 #include <stdlib.h>
 
-#define PLAYERSIZE (0.2f + playerScore / 20.0f)
+#define PLAYERSIZE (0.2f + playerScore / 164.0f)
 #define PLAYFIELDSIZE 4.0f
 #define CAMERAMOVESPEED 0.1f
 #define HEXAGONCOUNT 21
@@ -23,7 +23,7 @@
 
 float playerScore = 0.0f;
 float currentHexagonPos[HEXAGONCOUNT][2];
-
+float currentEnemyPos[1][2];
 float cameraPosition[2] = { 0,0 };
 
 float randomFloat(float a, float b) {
@@ -32,7 +32,7 @@ float randomFloat(float a, float b) {
    	float r = random * diff;
    	return a + r;
 }
-   
+
 void drawHexagon(float x, float y, float size) {
    	//Set drawing color (RGBA)
    	glColor3d(0.957, 0.643, 0.376);
@@ -47,6 +47,22 @@ void drawHexagon(float x, float y, float size) {
    	glVertex2d(0 * size + x, 0.8 * size + y);
 	glEnd();
    	//Done making polygon
+}
+
+void drawEnemy(float x, float y, float size) {
+	//Set drawing color (RGBA)
+	glColor3d(0.957, 0.643, 0.376);
+	//Tell OpenGL your intentions
+	glBegin(GL_POLYGON);
+	//Set the vertices glVertex2d(x, y);
+	glVertex2d(-0.5 * size + x, 0.5 * size + y);
+	glVertex2d(-0.5 * size + x, -0.5 * size + y);
+	glVertex2d(0 * size + x, -0.8 * size + y);
+	glVertex2d(0.5 * size + x, -0.5 * size + y);
+	glVertex2d(0.5 * size + x, 0.5 * size + y);
+	glVertex2d(0 * size + x, 0.8 * size + y);
+	glEnd();
+	//Done making polygon
 }
 
 void drawBorders() {
@@ -66,7 +82,12 @@ void setupHexagons() {
    		currentHexagonPos[hexagonCount][1] = randomFloat(-PLAYFIELDSIZE + HEXAGONSIZE, PLAYFIELDSIZE - HEXAGONSIZE);
    	}
 }
-   
+
+void setupEnemy() {
+	currentEnemyPos[0][0] = randomFloat(-PLAYFIELDSIZE + 0.3f, PLAYFIELDSIZE - 0.3f);
+	currentEnemyPos[0][1] = randomFloat(-PLAYFIELDSIZE + 0.3f, PLAYFIELDSIZE - 0.3f);
+}
+
 bool doesCollide(float item1[], float item2[], float size) {
    	float diffX = item1[0] - item2[0];
    	float diffY = item1[1] - item2[1];
@@ -93,6 +114,11 @@ void checkPlayerCollision() {
 			playerScore++;
 		}
 	}
+	if (doesCollide(cameraPosition, currentEnemyPos[0], (0.3f + PLAYERSIZE) / 2)) {
+		currentEnemyPos[0][0] = randomFloat(-PLAYFIELDSIZE + 0.3f, PLAYFIELDSIZE - 0.3f);
+		currentEnemyPos[0][1] = randomFloat(-PLAYFIELDSIZE + 0.3f, PLAYFIELDSIZE - 0.3f);
+		playerScore++;
+	}
 }
   
 void drawPlayer(float x, float y) {
@@ -103,6 +129,13 @@ void drawPlayer(float x, float y) {
 	 glVertex2d(x - (PLAYERSIZE / 2), y - (PLAYERSIZE / 2));
 	 glEnd();
 }
+
+void moveEnemy() {
+	//move enemy on x and y axis between 1 and -1 (needs to be increased)
+	currentEnemyPos[0][0] = (currentEnemyPos[0][0] > 1) ? -1 : currentEnemyPos[0][0] + 0.1;
+	currentEnemyPos[0][1] = (currentEnemyPos[0][1] > 1) ? -1 : currentEnemyPos[0][1] + 0.05;
+}
+
 void display(void) {
 	glLoadIdentity();
 	gluLookAt(cameraPosition[0], cameraPosition[1], -1, cameraPosition[0], cameraPosition[1], 0, 0.0, 1.0, 0.0);
@@ -111,11 +144,11 @@ void display(void) {
 	//Set background color (RGBA)
    	glClearColor(0.565, 0.933, 0.565, 0);
    	glClear(GL_COLOR_BUFFER_BIT);
-   
    	//draw the honey (x,y,size)
    	for (int hexagonCount = 0; hexagonCount < HEXAGONCOUNT; hexagonCount++) {
    		drawHexagon(currentHexagonPos[hexagonCount][0], currentHexagonPos[hexagonCount][1], HEXAGONSIZE);
    	}
+	drawEnemy(currentEnemyPos[0][0], currentEnemyPos[0][1], 0.3f);
 	drawBorders();
 	drawPlayer(cameraPosition[0], cameraPosition[1]);
 	//Clear screen and draw
@@ -128,15 +161,19 @@ void keyboardFunc(unsigned char key, int x, int y) {
 	 {
 		case 'a':
 			 cameraPosition[0] += CAMERAMOVESPEED;
+			 moveEnemy();
 			 break;
 		case 'd':
 			 cameraPosition[0] -= CAMERAMOVESPEED;
+			 moveEnemy();
 			 break;
 		case 'w':
 			 cameraPosition[1] += CAMERAMOVESPEED;
+			 moveEnemy();
 			 break;
 		case 's':
 			 cameraPosition[1] -= CAMERAMOVESPEED;
+			 moveEnemy();
 			 break;
 		 default:
 			 break;
@@ -148,11 +185,12 @@ void keyboardFunc(unsigned char key, int x, int y) {
 	 cameraPosition[0] = (cameraPosition[0] < -PLAYFIELDSIZE + halfPlayerSize) ? -PLAYFIELDSIZE + halfPlayerSize : cameraPosition[0];
 	 cameraPosition[1] = (cameraPosition[1] > PLAYFIELDSIZE - halfPlayerSize) ? PLAYFIELDSIZE - halfPlayerSize : cameraPosition[1];
 	 cameraPosition[1] = (cameraPosition[1] < -PLAYFIELDSIZE + halfPlayerSize) ? -PLAYFIELDSIZE + halfPlayerSize : cameraPosition[1];
-};
+}
 
 int main(int argc, char **argv) {
    	//pre-configure  game layout
    	setupHexagons();
+	setupEnemy();
    	//Initialize GLUT
    	glutInit(&argc, argv);
    	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
