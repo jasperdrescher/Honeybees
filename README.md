@@ -6,8 +6,12 @@ However, there is an enemy bug flying around which will try to eat you.
 
 Credits:
 
+- FreeGLUT: http://freeglut.sourceforge.net/
 - Adding colours: http://www.spacesocket.com/forum/thread-6655.html ("North").
 - Drawing polygons: https://en.wikibooks.org/wiki/OpenGL_Programming/GLStart/Tut3#Drawing_Polygons ("Wikibooks").
 - Random float generator: http://stackoverflow.com/questions/5289613/generate-random-float-between-two-floats ("Wim").
+- Using the escape key: http://www-bcf.usc.edu/~jbarbic/cs599-s11/openGLHelloWorld/openGLHelloWorld.cpp ("Jernej Barbic").
 
 Project made by Jasper Drescher ("JasperDre").
+
+This project is developed under the GNU GENERAL PUBLIC LICENSE of Version 3, 29 June 2007.
