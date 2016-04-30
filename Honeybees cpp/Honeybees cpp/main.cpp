@@ -3,9 +3,10 @@
 // DONE Destroy hexagons on collision with the player.
 // DONE Add an enemy sprite which moves across the screen and destroy player on collision.
 // DONE Increase playersize by every destroyed hexagon.
+// DONE Add a key to quit the program.
 //Draw text to display playerScore.
+//Reshape the player and enemy sprite.
 // OPTIONAL Add bitmap sprite as player (bee).
-// OPTIONAL Set proper screen to draw squares instead of rectangles.
 
 #include <math.h>
 #include <cstdlib>
@@ -21,6 +22,7 @@
 #define HEXAGONCOUNT 21
 #define HEXAGONSIZE 0.2f
 
+int windowID;
 float playerScore = 0.0f;
 float currentHexagonPos[HEXAGONCOUNT][2];
 float currentEnemyPos[1][2];
@@ -175,7 +177,12 @@ void keyboardFunc(unsigned char key, int x, int y) {
 			 cameraPosition[1] -= CAMERAMOVESPEED;
 			 moveEnemy();
 			 break;
-		 default:
+		case 27:
+			// ESC pressed, exit the application
+			glutDestroyWindow(windowID);
+			exit(0);
+			break;
+		default:
 			 break;
 	 }
 	 // if (cameraPositon[0] > PLAYFIELDSIZE) { cameraPosition[0] = PLAYFIELDSIZE; }
@@ -196,8 +203,9 @@ int main(int argc, char **argv) {
    	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
    	//Window Creation
    	glutInitWindowSize(1280, 720);
-   	glutInitWindowPosition(200, 100);
-   	glutCreateWindow("Catch the honey");
+   	glutInitWindowPosition(0, 0);
+   	char s[4096] = "Hello world";
+	windowID = glutCreateWindow(s);
    	//When the display needs redrawing
    	glutDisplayFunc(display);
 	glutKeyboardFunc(keyboardFunc);
