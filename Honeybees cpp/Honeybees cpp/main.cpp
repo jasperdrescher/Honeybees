@@ -137,8 +137,8 @@ void drawPlayer(float x, float y) {
 
 void moveEnemy() {
 	//move enemy on x and y axis between 1 and -1 (needs to be increased)
-	currentEnemyPos[0][0] = (currentEnemyPos[0][0] > (PLAYFIELDSIZE /2)) ? -(PLAYFIELDSIZE / 2) : currentEnemyPos[0][0] + randomFloat(-0.01, 0.2);
-	currentEnemyPos[0][1] = (currentEnemyPos[0][1] > (PLAYFIELDSIZE / 2)) ? -(PLAYFIELDSIZE / 2) : currentEnemyPos[0][1] + randomFloat(-0.01, 0.2);
+	currentEnemyPos[0][0] = (currentEnemyPos[0][0] > (PLAYFIELDSIZE /2)) ? -(PLAYFIELDSIZE / 2) : currentEnemyPos[0][0] + randomFloat(-0.01, 0.1);
+	currentEnemyPos[0][1] = (currentEnemyPos[0][1] > (PLAYFIELDSIZE / 2)) ? -(PLAYFIELDSIZE / 2) : currentEnemyPos[0][1] + randomFloat(-0.01, 0.1);
 }
 
 static void resize(int width, int height)
