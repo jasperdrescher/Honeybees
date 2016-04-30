@@ -1,12 +1,5 @@
-// DONE Block movement when colliding with the border / lines.
-// DONE Draw more hexagons within the borders.
-// DONE Destroy hexagons on collision with the player.
-// DONE Add an enemy sprite which moves across the screen and destroy player on collision.
-// DONE Increase playersize by every destroyed hexagon.
-// DONE Add a key to quit the program.
-//Draw text to display playerScore.
-//Reshape the player and enemy sprite.
-// OPTIONAL Add bitmap sprite as player (bee).
+//Please read the LICENSE.md and README.md files for credits, references and the license.
+//This file has been downloaded from the following repository: https://github.com/JasperDre/Honeybees.
 
 #include <math.h>
 #include <cstdlib>
@@ -16,17 +9,27 @@
 #include <iostream>
 #include <stdlib.h>
 
+#define WINDOWWIDTH 640
+#define WINDOWHEIGHT 480
 #define PLAYERSIZE (0.2f + playerScore / 164.0f)
 #define PLAYFIELDSIZE 4.0f
 #define CAMERAMOVESPEED 0.1f
 #define HEXAGONCOUNT 21
 #define HEXAGONSIZE 0.2f
 
+using  namespace std;
+
 int windowID;
 float playerScore = 0.0f;
 float currentHexagonPos[HEXAGONCOUNT][2];
 float currentEnemyPos[1][2];
 float cameraPosition[2] = { 0,0 };
+
+int w = 640, h = 480;
+const int font = (int)GLUT_BITMAP_9_BY_15;
+char s[30];
+char d[30];
+double t;
 
 float randomFloat(float a, float b) {
    	float random = ((float)rand() / (float)RAND_MAX);
@@ -138,6 +141,77 @@ void moveEnemy() {
 	currentEnemyPos[0][1] = (currentEnemyPos[0][1] > 1) ? -1 : currentEnemyPos[0][1] + 0.05;
 }
 
+static void resize(int width, int height)
+{
+	const float ar = (float)width / (float)height;
+	w = width;
+	h = height;
+	glViewport(0, 0, width, height);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glFrustum(-ar, ar, -1.0, 1.0, 2.0, 100.0);     
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+void setOrthographicProjection() {
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0, w, 0, h);
+	glScalef(1, -1, 1);
+	glTranslatef(0, -h, 0);
+	glMatrixMode(GL_MODELVIEW);
+}
+void resetPerspectiveProjection() {
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+}
+void renderBitmapString(float x, float y, void *font, const char *string) {
+	const char *c;
+	glRasterPos2f(x, y);
+	for (c = string; *c != '\0'; c++) {
+		glutBitmapCharacter(font, *c);
+	}
+}
+
+void keyboardFunc(unsigned char key, int x, int y) {
+	switch (key)
+	{
+	case 'a':
+		cameraPosition[0] += CAMERAMOVESPEED;
+		moveEnemy();
+		break;
+	case 'd':
+		cameraPosition[0] -= CAMERAMOVESPEED;
+		moveEnemy();
+		break;
+	case 'w':
+		cameraPosition[1] += CAMERAMOVESPEED;
+		moveEnemy();
+		break;
+	case 's':
+		cameraPosition[1] -= CAMERAMOVESPEED;
+		moveEnemy();
+		break;
+	case 27:
+		// ESC pressed, exit the application
+		glutDestroyWindow(windowID);
+		exit(0);
+		break;
+	default:
+		cout << "Press escape or WASD.  All other characters are ignored" << endl;
+		break;
+	}
+	// if (cameraPositon[0] > PLAYFIELDSIZE) { cameraPosition[0] = PLAYFIELDSIZE; }
+	//Keep the player inside the drawBorders / boundary.
+	float halfPlayerSize = PLAYERSIZE / 2.0f;
+	cameraPosition[0] = (cameraPosition[0] > PLAYFIELDSIZE - halfPlayerSize) ? PLAYFIELDSIZE - halfPlayerSize : cameraPosition[0];
+	cameraPosition[0] = (cameraPosition[0] < -PLAYFIELDSIZE + halfPlayerSize) ? -PLAYFIELDSIZE + halfPlayerSize : cameraPosition[0];
+	cameraPosition[1] = (cameraPosition[1] > PLAYFIELDSIZE - halfPlayerSize) ? PLAYFIELDSIZE - halfPlayerSize : cameraPosition[1];
+	cameraPosition[1] = (cameraPosition[1] < -PLAYFIELDSIZE + halfPlayerSize) ? -PLAYFIELDSIZE + halfPlayerSize : cameraPosition[1];
+}
+
 void display(void) {
 	glLoadIdentity();
 	gluLookAt(cameraPosition[0], cameraPosition[1], -1, cameraPosition[0], cameraPosition[1], 0, 0.0, 1.0, 0.0);
@@ -145,7 +219,15 @@ void display(void) {
 	checkPlayerCollision();
 	//Set background color (RGBA)
    	glClearColor(0.565, 0.933, 0.565, 0);
-   	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glColor3d(1.0, 0.0, 0.0);
+	setOrthographicProjection();
+	glPushMatrix();
+	glLoadIdentity();
+	renderBitmapString(0.1, 10, (void*)font, d);
+	renderBitmapString(0.1, 30, (void*)font, s);
+	glPopMatrix();
+	resetPerspectiveProjection();
    	//draw the honey (x,y,size)
    	for (int hexagonCount = 0; hexagonCount < HEXAGONCOUNT; hexagonCount++) {
    		drawHexagon(currentHexagonPos[hexagonCount][0], currentHexagonPos[hexagonCount][1], HEXAGONSIZE);
@@ -157,57 +239,39 @@ void display(void) {
    	glutSwapBuffers();
 	glutPostRedisplay();
 }
-   
-void keyboardFunc(unsigned char key, int x, int y) {
-	 switch (key)
-	 {
-		case 'a':
-			 cameraPosition[0] += CAMERAMOVESPEED;
-			 moveEnemy();
-			 break;
-		case 'd':
-			 cameraPosition[0] -= CAMERAMOVESPEED;
-			 moveEnemy();
-			 break;
-		case 'w':
-			 cameraPosition[1] += CAMERAMOVESPEED;
-			 moveEnemy();
-			 break;
-		case 's':
-			 cameraPosition[1] -= CAMERAMOVESPEED;
-			 moveEnemy();
-			 break;
-		case 27:
-			// ESC pressed, exit the application
-			glutDestroyWindow(windowID);
-			exit(0);
-			break;
-		default:
-			 break;
-	 }
-	 // if (cameraPositon[0] > PLAYFIELDSIZE) { cameraPosition[0] = PLAYFIELDSIZE; }
-	 //Keep the player inside the drawBorders / boundary.
-	 float halfPlayerSize = PLAYERSIZE / 2.0f;
-	 cameraPosition[0] = (cameraPosition[0] > PLAYFIELDSIZE - halfPlayerSize) ? PLAYFIELDSIZE - halfPlayerSize : cameraPosition[0];
-	 cameraPosition[0] = (cameraPosition[0] < -PLAYFIELDSIZE + halfPlayerSize) ? -PLAYFIELDSIZE + halfPlayerSize : cameraPosition[0];
-	 cameraPosition[1] = (cameraPosition[1] > PLAYFIELDSIZE - halfPlayerSize) ? PLAYFIELDSIZE - halfPlayerSize : cameraPosition[1];
-	 cameraPosition[1] = (cameraPosition[1] < -PLAYFIELDSIZE + halfPlayerSize) ? -PLAYFIELDSIZE + halfPlayerSize : cameraPosition[1];
+
+void update(int value) {
+	t = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+	int score = (int)playerScore;
+	int time = (int)t;
+	sprintf_s(d, "Score: %2d", score);
+	sprintf_s(s, "Time: %2d sec", time);
+	glutTimerFunc(1000, update, 0);
+	glutPostRedisplay();
 }
 
 int main(int argc, char **argv) {
-   	//pre-configure  game layout
+	//Use the standard output stream to the console for game information.
+	cout << "\n\
+	-----------------------------------------------------------------------\n\
+	Welcome to Honeybees.\n\
+	- Use your keyboard to move.\n\
+	- Press escape to quit.\n\
+	-----------------------------------------------------------------------\n";
+   	//pre-configure the layout.
    	setupHexagons();
 	setupEnemy();
-   	//Initialize GLUT
+   	//Initialize GLUT.
    	glutInit(&argc, argv);
-   	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-   	//Window Creation
-   	glutInitWindowSize(1280, 720);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+   	//Create the window.
+   	glutInitWindowSize(WINDOWWIDTH, WINDOWHEIGHT);
    	glutInitWindowPosition(0, 0);
    	char s[4096] = "Hello world";
 	windowID = glutCreateWindow(s);
    	//When the display needs redrawing
-   	glutDisplayFunc(display);
+	glutDisplayFunc(display);
+	glutTimerFunc(25, update, 0);
 	glutKeyboardFunc(keyboardFunc);
    	//Continue until user quits
    	glutMainLoop();
