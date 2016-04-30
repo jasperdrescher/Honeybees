@@ -1,14 +1,15 @@
 //Please read the LICENSE.md and README.md files for credits, references and the license.
 //This file has been downloaded from the following repository: https://github.com/JasperDre/Honeybees.
 
-#include <math.h>
-#include <cstdlib>
-#include <Windows.h>
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-#include <iostream>
-#include <stdlib.h>
+#include <math.h>			//Standard definitions.
+#include <cstdlib>			//Standard definitions.
+#include <Windows.h>		//Standard definitions.
+#include <GL/glew.h>		//GLUT.
+#include <GL/freeglut.h>	//FreeGLUT.
+#include <iostream>			//C++ I/O.
+#include <stdlib.h>			//Standard definitions.
 
+//Definitions which will replace the name with the content behind it.
 #define WINDOWWIDTH 640
 #define WINDOWHEIGHT 480
 #define PLAYERSIZE (0.2f + playerScore / 164.0f)
@@ -17,6 +18,7 @@
 #define HEXAGONCOUNT 21
 #define HEXAGONSIZE 0.2f
 
+//Make std accessible.
 using  namespace std;
 
 int windowID;
@@ -31,6 +33,7 @@ char s[30];
 char d[30];
 double t;
 
+//Generate a random float by getting a seed, min, and max parameter.
 float randomFloat(float a, float b) {
    	float random = ((float)rand() / (float)RAND_MAX);
    	float diff = b - a;
@@ -39,9 +42,9 @@ float randomFloat(float a, float b) {
 }
 
 void drawHexagon(float x, float y, float size) {
-   	//Set drawing color (RGBA)
+   	//Set drawing color (RGB).
    	glColor3d(0.957, 0.643, 0.376);
-   	//Tell OpenGL your intentions
+   	//Define the type of drawing (shape or lines).
    	glBegin(GL_POLYGON);
    	//Set the vertices glVertex2d(x, y);
    	glVertex2d(-0.5 * size + x, 0.5 * size + y);
@@ -50,14 +53,14 @@ void drawHexagon(float x, float y, float size) {
    	glVertex2d(0.5 * size + x, -0.5 * size + y);
    	glVertex2d(0.5 * size + x, 0.5 * size + y);
    	glVertex2d(0 * size + x, 0.8 * size + y);
+	//End the drawing.
 	glEnd();
-   	//Done making polygon
 }
 
 void drawEnemy(float x, float y, float size) {
-	//Set drawing color (RGBA)
+	//Set drawing color (RGB).
 	glColor3d(0.957, 0.643, 0.376);
-	//Tell OpenGL your intentions
+	//Define the type of drawing (shape or lines).
 	glBegin(GL_POLYGON);
 	//Set the vertices glVertex2d(x, y);
 	glVertex2d(-0.5 * size + x, 0.5 * size + y);
@@ -66,8 +69,8 @@ void drawEnemy(float x, float y, float size) {
 	glVertex2d(0.5 * size + x, -0.5 * size + y);
 	glVertex2d(0.5 * size + x, 0.5 * size + y);
 	glVertex2d(0 * size + x, 0.8 * size + y);
+	//End the drawing.
 	glEnd();
-	//Done making polygon
 }
 
 void drawBorders() {
@@ -136,7 +139,7 @@ void drawPlayer(float x, float y) {
 }
 
 void moveEnemy() {
-	//move enemy on x and y axis between 1 and -1 (needs to be increased)
+	//Move the enemy on x and y axis between half the playerfieldsize and - half the playerfieldsize.
 	currentEnemyPos[0][0] = (currentEnemyPos[0][0] > (PLAYFIELDSIZE /2)) ? -(PLAYFIELDSIZE / 2) : currentEnemyPos[0][0] + randomFloat(-0.01, 0.1);
 	currentEnemyPos[0][1] = (currentEnemyPos[0][1] > (PLAYFIELDSIZE / 2)) ? -(PLAYFIELDSIZE / 2) : currentEnemyPos[0][1] + randomFloat(-0.01, 0.1);
 }
@@ -228,14 +231,14 @@ void display(void) {
 	renderBitmapString(0.1, 30, (void*)font, s);
 	glPopMatrix();
 	resetPerspectiveProjection();
-   	//draw the honey (x,y,size)
+   	//Draw the honey (x,y,size).
    	for (int hexagonCount = 0; hexagonCount < HEXAGONCOUNT; hexagonCount++) {
    		drawHexagon(currentHexagonPos[hexagonCount][0], currentHexagonPos[hexagonCount][1], HEXAGONSIZE);
    	}
 	drawEnemy(currentEnemyPos[0][0], currentEnemyPos[0][1], 0.3f);
 	drawBorders();
 	drawPlayer(cameraPosition[0], cameraPosition[1]);
-	//Clear screen and draw
+	//Clear screen and draw.
    	glutSwapBuffers();
 	glutPostRedisplay();
 }
@@ -255,7 +258,7 @@ int main(int argc, char **argv) {
 	cout << "Welcome to Honeybees.\n\
 	- Use your keyboard to move.\n\
 	- Press escape to quit.\n";
-   	//pre-configure the layout.
+   	//Pre-configure the layout.
    	setupHexagons();
 	setupEnemy();
    	//Initialize GLUT.
@@ -266,11 +269,11 @@ int main(int argc, char **argv) {
    	glutInitWindowPosition(0, 0);
    	char s[4096] = "Hello world";
 	windowID = glutCreateWindow(s);
-   	//When the display needs redrawing
+   	//When the display needs redrawing.
 	glutDisplayFunc(display);
 	glutTimerFunc(25, update, 0);
 	glutKeyboardFunc(keyboardFunc);
-   	//Continue until user quits
+   	//Continue until user quits.
    	glutMainLoop();
    	return 0;
 }
