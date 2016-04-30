@@ -122,7 +122,7 @@ void checkPlayerCollision() {
 	if (doesCollide(cameraPosition, currentEnemyPos[0], (0.3f + PLAYERSIZE) / 2)) {
 		currentEnemyPos[0][0] = randomFloat(-PLAYFIELDSIZE + 0.3f, PLAYFIELDSIZE - 0.3f);
 		currentEnemyPos[0][1] = randomFloat(-PLAYFIELDSIZE + 0.3f, PLAYFIELDSIZE - 0.3f);
-		playerScore++;
+		playerScore = 0.0f;
 	}
 }
   
@@ -137,8 +137,8 @@ void drawPlayer(float x, float y) {
 
 void moveEnemy() {
 	//move enemy on x and y axis between 1 and -1 (needs to be increased)
-	currentEnemyPos[0][0] = (currentEnemyPos[0][0] > 1) ? -1 : currentEnemyPos[0][0] + 0.1;
-	currentEnemyPos[0][1] = (currentEnemyPos[0][1] > 1) ? -1 : currentEnemyPos[0][1] + 0.05;
+	currentEnemyPos[0][0] = (currentEnemyPos[0][0] > (PLAYFIELDSIZE /2)) ? -(PLAYFIELDSIZE / 2) : currentEnemyPos[0][0] + randomFloat(-0.01, 0.2);
+	currentEnemyPos[0][1] = (currentEnemyPos[0][1] > (PLAYFIELDSIZE / 2)) ? -(PLAYFIELDSIZE / 2) : currentEnemyPos[0][1] + randomFloat(-0.01, 0.2);
 }
 
 static void resize(int width, int height)
@@ -224,7 +224,7 @@ void display(void) {
 	setOrthographicProjection();
 	glPushMatrix();
 	glLoadIdentity();
-	renderBitmapString(0.1, 10, (void*)font, d);
+	renderBitmapString(0.1, 15, (void*)font, d);
 	renderBitmapString(0.1, 30, (void*)font, s);
 	glPopMatrix();
 	resetPerspectiveProjection();
@@ -252,12 +252,9 @@ void update(int value) {
 
 int main(int argc, char **argv) {
 	//Use the standard output stream to the console for game information.
-	cout << "\n\
-	-----------------------------------------------------------------------\n\
-	Welcome to Honeybees.\n\
+	cout << "Welcome to Honeybees.\n\
 	- Use your keyboard to move.\n\
-	- Press escape to quit.\n\
-	-----------------------------------------------------------------------\n";
+	- Press escape to quit.\n";
    	//pre-configure the layout.
    	setupHexagons();
 	setupEnemy();
