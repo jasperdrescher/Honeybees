@@ -11,27 +11,27 @@
 #include <iostream>			//C++ I/O.
 #include <stdlib.h>			//Standard definitions.
 
-#define WINDOWWIDTH 768
-#define WINDOWHEIGHT 768
-#define PLAYERSIZE (0.2f + playerScore / 164.0f)
-#define PLAYFIELDSIZE 4.0f
-#define CAMERAMOVESPEED 0.1f
-#define HEXAGONCOUNT 42
-#define HEXAGONSIZE 0.25f
-#define ENEMYSIZE 0.4f
+#define WINDOWWIDTH 768		//Define the width of the window.
+#define WINDOWHEIGHT 768	//Define the height of the window.
+#define PLAYERSIZE (0.2f + playerScore / 164.0f)	//Define the size of the player by a seed (0.2f) and increment it by the score (divided by a correction).
+#define PLAYFIELDSIZE 4.0f	//Define the size of the scene and borders.
+#define CAMERAMOVESPEED 0.1f	//Define the speed which the camera moves by.
+#define HEXAGONCOUNT 42		//Define the count of the honeycombs.
+#define HEXAGONSIZE 0.25f	//Define the size of the honeycombs.
+#define ENEMYSIZE 0.4f		//Define the size of the enemy.
 
-using  namespace std;
+using  namespace std;		//Make std accesible.
 
-int windowID;
-float playerScore = 0.0f;
-float currentHexagonPos[HEXAGONCOUNT][2];
-float currentEnemyPos[1][2];
-float cameraPosition[2] = { 0,0 };
+int windowID;				//Set the id of the window to acces it later on.
+float playerScore = 0.0f;	//Set a seed for the score.
+float currentHexagonPos[HEXAGONCOUNT][2];	//Create an array to store the position of the hexagons currentHexagonPos[count][x and y].
+float currentEnemyPos[1][2];	//Create an array to store the position of the hexagons currentEnemyPos[count][x and y].
+float cameraPosition[2] = { 0,0 };	//Create an array to store the coordinates of both axis (x and y).
 
-int w = WINDOWWIDTH, h = WINDOWHEIGHT;
-const int font = (int)GLUT_BITMAP_9_BY_15;
-char s[30];
-char d[30];
+int w = WINDOWWIDTH, h = WINDOWHEIGHT;	//Set a variable to containt the width and height of the window.
+const int font = (int)GLUT_BITMAP_9_BY_15;	//Set a integer to contain the font.
+char s[30];					//time.
+char d[30];					//score.
 double t;
 
 float randomFloat(float a, float b) {
