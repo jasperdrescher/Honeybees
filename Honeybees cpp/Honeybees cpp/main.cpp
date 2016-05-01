@@ -224,12 +224,6 @@ void display(void) {
    	glClearColor(0.565, 0.933, 0.565, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColor3d(1.0, 0.0, 0.0);
-	setOrthographicProjection();
-	glPushMatrix();
-	glLoadIdentity();
-	renderBitmapString(0.1, 15, (void*)font, d);
-	renderBitmapString(0.1, 30, (void*)font, s);
-	glPopMatrix();
 	resetPerspectiveProjection();
    	//Draw the honey (x,y,size).
    	for (int hexagonCount = 0; hexagonCount < HEXAGONCOUNT; hexagonCount++) {
@@ -238,6 +232,13 @@ void display(void) {
 	drawEnemy(currentEnemyPos[0][0], currentEnemyPos[0][1], 0.3f);
 	drawBorders();
 	drawPlayer(cameraPosition[0], cameraPosition[1]);
+	setOrthographicProjection();
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3d(0.0, 0.0, 1.0);
+	renderBitmapString(0.1, 15, (void*)font, d);
+	renderBitmapString(0.1, 30, (void*)font, s);
+	glPopMatrix();
 	//Clear screen and draw.
    	glutSwapBuffers();
 	glutPostRedisplay();
