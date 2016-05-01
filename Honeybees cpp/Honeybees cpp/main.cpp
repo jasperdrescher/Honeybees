@@ -17,6 +17,7 @@
 #define CAMERAMOVESPEED 0.1f
 #define HEXAGONCOUNT 21
 #define HEXAGONSIZE 0.2f
+#define PLAYERVERTICESSIZE 4
 
 //Make std accessible.
 using  namespace std;
@@ -26,6 +27,14 @@ float playerScore = 0.0f;
 float currentHexagonPos[HEXAGONCOUNT][2];
 float currentEnemyPos[1][2];
 float cameraPosition[2] = { 0,0 };
+
+float playerVertices[PLAYERVERTICESSIZE][2] = {
+	//	{-(PLAYERSIZE / 2), (PLAYERSIZE / 2) },
+	//	{ (PLAYERSIZE / 2), (PLAYERSIZE / 2) },
+	//	{ (PLAYERSIZE / 2), -(PLAYERSIZE / 2) },
+	//	{ -(PLAYERSIZE / 2), -(PLAYERSIZE / 2) } 
+		{0.22401914,1048.0685}, {0.67205743, -0.8774}, {1.34411483, 0.075}
+};
 
 int w = 640, h = 480;
 const int font = (int)GLUT_BITMAP_9_BY_15;
@@ -39,6 +48,14 @@ float randomFloat(float a, float b) {
    	float diff = b - a;
    	float r = random * diff;
    	return a + r;
+}
+
+void drawPlayer(float x, float y) {
+	glBegin(GL_POLYGON);
+	for (int index = 0; index < PLAYERVERTICESSIZE; index++) {
+		glVertex2d(x + (playerVertices[index][0]* PLAYERSIZE- PLAYERSIZE), y + (playerVertices[index][1]* PLAYERSIZE- PLAYERSIZE));
+	}
+	glEnd();
 }
 
 void drawHexagon(float x, float y, float size) {
@@ -127,15 +144,6 @@ void checkPlayerCollision() {
 		currentEnemyPos[0][1] = randomFloat(-PLAYFIELDSIZE + 0.3f, PLAYFIELDSIZE - 0.3f);
 		playerScore = 0.0f;
 	}
-}
-  
-void drawPlayer(float x, float y) {
-	 glBegin(GL_POLYGON);
-	 glVertex2d(x - (PLAYERSIZE / 2), y + (PLAYERSIZE / 2));
-	 glVertex2d(x + (PLAYERSIZE / 2), y + (PLAYERSIZE / 2));
-	 glVertex2d(x + (PLAYERSIZE / 2), y - (PLAYERSIZE / 2));
-	 glVertex2d(x - (PLAYERSIZE / 2), y - (PLAYERSIZE / 2));
-	 glEnd();
 }
 
 void moveEnemy() {
