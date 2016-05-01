@@ -1,4 +1,5 @@
 //Please read the LICENSE.md and README.md files for credits, references and the license.
+//Keep in mind that this is my first ever attempt at writing a program in C++, so any feedback is appreciated.
 //This file has been downloaded from the following repository: https://github.com/JasperDre/Honeybees.
 
 #include <math.h>			//Standard definitions.
@@ -17,7 +18,6 @@
 #define CAMERAMOVESPEED 0.1f
 #define HEXAGONCOUNT 21
 #define HEXAGONSIZE 0.2f
-#define PLAYERVERTICESSIZE 4
 
 //Make std accessible.
 using  namespace std;
@@ -28,15 +28,7 @@ float currentHexagonPos[HEXAGONCOUNT][2];
 float currentEnemyPos[1][2];
 float cameraPosition[2] = { 0,0 };
 
-float playerVertices[PLAYERVERTICESSIZE][2] = {
-	//	{-(PLAYERSIZE / 2), (PLAYERSIZE / 2) },
-	//	{ (PLAYERSIZE / 2), (PLAYERSIZE / 2) },
-	//	{ (PLAYERSIZE / 2), -(PLAYERSIZE / 2) },
-	//	{ -(PLAYERSIZE / 2), -(PLAYERSIZE / 2) } 
-		{0.22401914,1048.0685}, {0.67205743, -0.8774}, {1.34411483, 0.075}
-};
-
-int w = 640, h = 480;
+int w = WINDOWWIDTH, h = WINDOWHEIGHT;
 const int font = (int)GLUT_BITMAP_9_BY_15;
 char s[30];
 char d[30];
@@ -51,10 +43,11 @@ float randomFloat(float a, float b) {
 }
 
 void drawPlayer(float x, float y) {
-	glBegin(GL_POLYGON);
-	for (int index = 0; index < PLAYERVERTICESSIZE; index++) {
-		glVertex2d(x + (playerVertices[index][0]* PLAYERSIZE- PLAYERSIZE), y + (playerVertices[index][1]* PLAYERSIZE- PLAYERSIZE));
-	}
+	glBegin(GL_LINE_LOOP);
+	glVertex2d(x - (PLAYERSIZE / 2), y + (PLAYERSIZE / 2));
+	glVertex2d(x + (PLAYERSIZE / 2), y + (PLAYERSIZE / 2));
+	glVertex2d(x + (PLAYERSIZE / 2), y - (PLAYERSIZE / 2));
+	glVertex2d(x - (PLAYERSIZE / 2), y - (PLAYERSIZE / 2));
 	glEnd();
 }
 
