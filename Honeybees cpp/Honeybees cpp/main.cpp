@@ -1,3 +1,4 @@
+//Hello world!
 //Please read the LICENSE.md and README.md files for credits, references and the license.
 //Keep in mind that this is my first attempt at writing a program in C++, so any feedback is appreciated.
 //This file originates from the following repository: https://github.com/JasperDre/Honeybees.
@@ -193,7 +194,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
 		break;
 	}
 	float halfPlayerSize = PLAYERSIZE / 2.0f;
-	// The following is an alternative to: if (cameraPositon[0] > PLAYFIELDSIZE) { cameraPosition[0] = PLAYFIELDSIZE; }.
+	//The following is an alternative to: if (cameraPositon[0] > PLAYFIELDSIZE) { cameraPosition[0] = PLAYFIELDSIZE; }.
 	cameraPosition[0] = (cameraPosition[0] > PLAYFIELDSIZE - halfPlayerSize) ? PLAYFIELDSIZE - halfPlayerSize : cameraPosition[0];
 	cameraPosition[0] = (cameraPosition[0] < -PLAYFIELDSIZE + halfPlayerSize) ? -PLAYFIELDSIZE + halfPlayerSize : cameraPosition[0];
 	cameraPosition[1] = (cameraPosition[1] > PLAYFIELDSIZE - halfPlayerSize) ? PLAYFIELDSIZE - halfPlayerSize : cameraPosition[1];
