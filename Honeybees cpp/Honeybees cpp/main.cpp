@@ -10,16 +10,15 @@
 #include <iostream>			//C++ I/O.
 #include <stdlib.h>			//Standard definitions.
 
-//Definitions which will replace the name with the content behind it.
-#define WINDOWWIDTH 640
-#define WINDOWHEIGHT 480
+#define WINDOWWIDTH 768
+#define WINDOWHEIGHT 768
 #define PLAYERSIZE (0.2f + playerScore / 164.0f)
 #define PLAYFIELDSIZE 4.0f
 #define CAMERAMOVESPEED 0.1f
-#define HEXAGONCOUNT 21
-#define HEXAGONSIZE 0.2f
+#define HEXAGONCOUNT 42
+#define HEXAGONSIZE 0.25f
+#define ENEMYSIZE 0.4f
 
-//Make std accessible.
 using  namespace std;
 
 int windowID;
@@ -34,7 +33,6 @@ char s[30];
 char d[30];
 double t;
 
-//Generate a random float by getting a seed, min, and max parameter.
 float randomFloat(float a, float b) {
    	float random = ((float)rand() / (float)RAND_MAX);
    	float diff = b - a;
@@ -43,7 +41,8 @@ float randomFloat(float a, float b) {
 }
 
 void drawPlayer(float x, float y) {
-	glBegin(GL_LINE_LOOP);
+	glColor3f(0.988, 0.815, 0.211);
+	glBegin(GL_POLYGON);
 	glVertex2d(x - (PLAYERSIZE / 2), y + (PLAYERSIZE / 2));
 	glVertex2d(x + (PLAYERSIZE / 2), y + (PLAYERSIZE / 2));
 	glVertex2d(x + (PLAYERSIZE / 2), y - (PLAYERSIZE / 2));
@@ -52,39 +51,29 @@ void drawPlayer(float x, float y) {
 }
 
 void drawHexagon(float x, float y, float size) {
-   	//Set drawing color (RGB).
-   	glColor3d(0.957, 0.643, 0.376);
-   	//Define the type of drawing (shape or lines).
+   	glColor3f(0.980, 0.698, 0.172);
    	glBegin(GL_POLYGON);
-   	//Set the vertices glVertex2d(x, y);
-   	glVertex2d(-0.5 * size + x, 0.5 * size + y);
-   	glVertex2d(-0.5 * size + x, -0.5 * size + y);
-   	glVertex2d(0 * size + x, -0.8 * size + y);
-   	glVertex2d(0.5 * size + x, -0.5 * size + y);
-   	glVertex2d(0.5 * size + x, 0.5 * size + y);
-   	glVertex2d(0 * size + x, 0.8 * size + y);
-	//End the drawing.
+   	glVertex2d(-0.4 * size + x, 0.2 * size + y);
+   	glVertex2d(-0.4 * size + x, -0.2 * size + y);
+   	glVertex2d(0 * size + x, -0.4 * size + y);
+   	glVertex2d(0.4 * size + x, -0.2 * size + y);
+   	glVertex2d(0.4 * size + x, 0.2 * size + y);
+   	glVertex2d(0 * size + x, 0.4 * size + y);
 	glEnd();
 }
 
 void drawEnemy(float x, float y, float size) {
-	//Set drawing color (RGB).
-	glColor3d(0.957, 0.643, 0.376);
-	//Define the type of drawing (shape or lines).
+	glColor3f(0.863, 0.078, 0.235);
 	glBegin(GL_POLYGON);
-	//Set the vertices glVertex2d(x, y);
-	glVertex2d(-0.5 * size + x, 0.5 * size + y);
-	glVertex2d(-0.5 * size + x, -0.5 * size + y);
-	glVertex2d(0 * size + x, -0.8 * size + y);
-	glVertex2d(0.5 * size + x, -0.5 * size + y);
-	glVertex2d(0.5 * size + x, 0.5 * size + y);
-	glVertex2d(0 * size + x, 0.8 * size + y);
-	//End the drawing.
+	glVertex2d(x - (ENEMYSIZE / 2), y + (ENEMYSIZE / 2));
+	glVertex2d(x + (ENEMYSIZE / 2), y + (ENEMYSIZE / 2));
+	glVertex2d(x + (ENEMYSIZE / 2), y - (ENEMYSIZE / 2));
+	glVertex2d(x - (ENEMYSIZE / 2), y - (ENEMYSIZE / 2));
 	glEnd();
 }
 
 void drawBorders() {
-	glColor3d(0.957, 0.643, 0.376);
+	glColor3f(1.0, 0.0, 0.0);
 	glBegin(GL_LINE_LOOP);
 	glVertex2f(-PLAYFIELDSIZE, PLAYFIELDSIZE);
 	glVertex2f(PLAYFIELDSIZE, PLAYFIELDSIZE);
@@ -133,14 +122,13 @@ void checkPlayerCollision() {
 		}
 	}
 	if (doesCollide(cameraPosition, currentEnemyPos[0], (0.3f + PLAYERSIZE) / 2)) {
-		currentEnemyPos[0][0] = randomFloat(-PLAYFIELDSIZE + 0.3f, PLAYFIELDSIZE - 0.3f);
-		currentEnemyPos[0][1] = randomFloat(-PLAYFIELDSIZE + 0.3f, PLAYFIELDSIZE - 0.3f);
+		currentEnemyPos[0][0] = randomFloat(-PLAYFIELDSIZE + ENEMYSIZE, PLAYFIELDSIZE - ENEMYSIZE);
+		currentEnemyPos[0][1] = randomFloat(-PLAYFIELDSIZE + ENEMYSIZE, PLAYFIELDSIZE - ENEMYSIZE);
 		playerScore = 0.0f;
 	}
 }
 
 void moveEnemy() {
-	//Move the enemy on x and y axis between half the playerfieldsize and - half the playerfieldsize.
 	currentEnemyPos[0][0] = (currentEnemyPos[0][0] > (PLAYFIELDSIZE /2)) ? -(PLAYFIELDSIZE / 2) : currentEnemyPos[0][0] + randomFloat(-0.01, 0.1);
 	currentEnemyPos[0][1] = (currentEnemyPos[0][1] > (PLAYFIELDSIZE / 2)) ? -(PLAYFIELDSIZE / 2) : currentEnemyPos[0][1] + randomFloat(-0.01, 0.1);
 }
@@ -199,7 +187,6 @@ void keyboardFunc(unsigned char key, int x, int y) {
 		moveEnemy();
 		break;
 	case 27:
-		// ESC pressed, exit the application
 		glutDestroyWindow(windowID);
 		exit(0);
 		break;
@@ -208,7 +195,6 @@ void keyboardFunc(unsigned char key, int x, int y) {
 		break;
 	}
 	// if (cameraPositon[0] > PLAYFIELDSIZE) { cameraPosition[0] = PLAYFIELDSIZE; }
-	//Keep the player inside the drawBorders / boundary.
 	float halfPlayerSize = PLAYERSIZE / 2.0f;
 	cameraPosition[0] = (cameraPosition[0] > PLAYFIELDSIZE - halfPlayerSize) ? PLAYFIELDSIZE - halfPlayerSize : cameraPosition[0];
 	cameraPosition[0] = (cameraPosition[0] < -PLAYFIELDSIZE + halfPlayerSize) ? -PLAYFIELDSIZE + halfPlayerSize : cameraPosition[0];
@@ -221,12 +207,10 @@ void display(void) {
 	gluLookAt(cameraPosition[0], cameraPosition[1], -1, cameraPosition[0], cameraPosition[1], 0, 0.0, 1.0, 0.0);
    	updateHexagons();
 	checkPlayerCollision();
-	//Set background color (RGBA)
-   	glClearColor(0.565, 0.933, 0.565, 0);
+   	glClearColor(1.000, 0.992, 0.878, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glColor3d(1.0, 0.0, 0.0);
+	glColor3f(1.0, 0.0, 0.0);
 	resetPerspectiveProjection();
-   	//Draw the honey (x,y,size).
    	for (int hexagonCount = 0; hexagonCount < HEXAGONCOUNT; hexagonCount++) {
    		drawHexagon(currentHexagonPos[hexagonCount][0], currentHexagonPos[hexagonCount][1], HEXAGONSIZE);
    	}
@@ -240,7 +224,6 @@ void display(void) {
 	renderBitmapString(0.1, 15, (void*)font, d);
 	renderBitmapString(0.1, 30, (void*)font, s);
 	glPopMatrix();
-	//Clear screen and draw.
    	glutSwapBuffers();
 	glutPostRedisplay();
 }
@@ -256,26 +239,20 @@ void update(int value) {
 }
 
 int main(int argc, char **argv) {
-	//Use the standard output stream to the console for game information.
 	cout << "Welcome to Honeybees.\n\
 	- Use your keyboard to move.\n\
 	- Press escape to quit.\n";
-   	//Pre-configure the layout.
    	setupHexagons();
 	setupEnemy();
-   	//Initialize GLUT.
    	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-   	//Create the window.
    	glutInitWindowSize(WINDOWWIDTH, WINDOWHEIGHT);
    	glutInitWindowPosition(0, 0);
    	char s[4096] = "Hello world";
 	windowID = glutCreateWindow(s);
-   	//When the display needs redrawing.
 	glutDisplayFunc(display);
 	glutTimerFunc(25, update, 0);
 	glutKeyboardFunc(keyboardFunc);
-   	//Continue until user quits.
    	glutMainLoop();
    	return 0;
 }
