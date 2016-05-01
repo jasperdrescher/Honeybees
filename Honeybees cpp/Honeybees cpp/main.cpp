@@ -1,6 +1,6 @@
 //Please read the LICENSE.md and README.md files for credits, references and the license.
-//Keep in mind that this is my first ever attempt at writing a program in C++, so any feedback is appreciated.
-//This file has been downloaded from the following repository: https://github.com/JasperDre/Honeybees.
+//Keep in mind that this is my first attempt at writing a program in C++, so any feedback is appreciated.
+//This file originates from the following repository: https://github.com/JasperDre/Honeybees.
 
 #include <math.h>			//Standard definitions.
 #include <cstdlib>			//Standard definitions.
@@ -91,8 +91,8 @@ void setupHexagons() {
 }
 
 void setupEnemy() {
-	currentEnemyPos[0][0] = randomFloat(-PLAYFIELDSIZE + 0.3f, PLAYFIELDSIZE - 0.3f);
-	currentEnemyPos[0][1] = randomFloat(-PLAYFIELDSIZE + 0.3f, PLAYFIELDSIZE - 0.3f);
+	currentEnemyPos[0][0] = randomFloat(-PLAYFIELDSIZE + ENEMYSIZE, PLAYFIELDSIZE - ENEMYSIZE);
+	currentEnemyPos[0][1] = randomFloat(-PLAYFIELDSIZE + ENEMYSIZE, PLAYFIELDSIZE - ENEMYSIZE);
 }
 
 bool doesCollide(float item1[], float item2[], float size) {
@@ -128,9 +128,11 @@ void checkPlayerCollision() {
 	}
 }
 
-void moveEnemy() {
-	currentEnemyPos[0][0] = (currentEnemyPos[0][0] > (PLAYFIELDSIZE /2)) ? -(PLAYFIELDSIZE / 2) : currentEnemyPos[0][0] + randomFloat(-0.01, 0.1);
-	currentEnemyPos[0][1] = (currentEnemyPos[0][1] > (PLAYFIELDSIZE / 2)) ? -(PLAYFIELDSIZE / 2) : currentEnemyPos[0][1] + randomFloat(-0.01, 0.1);
+void moveEnemy(int value) {
+	currentEnemyPos[0][0] = (currentEnemyPos[0][0] > PLAYFIELDSIZE - ENEMYSIZE) ? -PLAYFIELDSIZE + ENEMYSIZE : currentEnemyPos[0][0] + randomFloat(-0.01, 0.1);
+	currentEnemyPos[0][1] = (currentEnemyPos[0][1] > PLAYFIELDSIZE - ENEMYSIZE) ? -PLAYFIELDSIZE + ENEMYSIZE : currentEnemyPos[0][1] + randomFloat(-0.01, 0.1);
+	glutTimerFunc(250, moveEnemy, 0);
+	glutPostRedisplay();
 }
 
 static void resize(int width, int height)
@@ -172,19 +174,15 @@ void keyboardFunc(unsigned char key, int x, int y) {
 	{
 	case 'a':
 		cameraPosition[0] += CAMERAMOVESPEED;
-		moveEnemy();
 		break;
 	case 'd':
 		cameraPosition[0] -= CAMERAMOVESPEED;
-		moveEnemy();
 		break;
 	case 'w':
 		cameraPosition[1] += CAMERAMOVESPEED;
-		moveEnemy();
 		break;
 	case 's':
 		cameraPosition[1] -= CAMERAMOVESPEED;
-		moveEnemy();
 		break;
 	case 27:
 		glutDestroyWindow(windowID);
@@ -194,8 +192,8 @@ void keyboardFunc(unsigned char key, int x, int y) {
 		cout << "Press escape or WASD.  All other characters are ignored" << endl;
 		break;
 	}
-	// if (cameraPositon[0] > PLAYFIELDSIZE) { cameraPosition[0] = PLAYFIELDSIZE; }
 	float halfPlayerSize = PLAYERSIZE / 2.0f;
+	// The following is an alternative to: if (cameraPositon[0] > PLAYFIELDSIZE) { cameraPosition[0] = PLAYFIELDSIZE; }.
 	cameraPosition[0] = (cameraPosition[0] > PLAYFIELDSIZE - halfPlayerSize) ? PLAYFIELDSIZE - halfPlayerSize : cameraPosition[0];
 	cameraPosition[0] = (cameraPosition[0] < -PLAYFIELDSIZE + halfPlayerSize) ? -PLAYFIELDSIZE + halfPlayerSize : cameraPosition[0];
 	cameraPosition[1] = (cameraPosition[1] > PLAYFIELDSIZE - halfPlayerSize) ? PLAYFIELDSIZE - halfPlayerSize : cameraPosition[1];
@@ -209,7 +207,6 @@ void display(void) {
 	checkPlayerCollision();
    	glClearColor(1.000, 0.992, 0.878, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glColor3f(1.0, 0.0, 0.0);
 	resetPerspectiveProjection();
    	for (int hexagonCount = 0; hexagonCount < HEXAGONCOUNT; hexagonCount++) {
    		drawHexagon(currentHexagonPos[hexagonCount][0], currentHexagonPos[hexagonCount][1], HEXAGONSIZE);
@@ -234,7 +231,7 @@ void update(int value) {
 	int time = (int)t;
 	sprintf_s(d, "Score: %2d", score);
 	sprintf_s(s, "Time: %2d sec", time);
-	glutTimerFunc(1000, update, 0);
+	glutTimerFunc(500, update, 0);
 	glutPostRedisplay();
 }
 
@@ -248,10 +245,11 @@ int main(int argc, char **argv) {
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
    	glutInitWindowSize(WINDOWWIDTH, WINDOWHEIGHT);
    	glutInitWindowPosition(0, 0);
-   	char s[4096] = "Hello world";
+   	char s[4096] = "Honeybees";
 	windowID = glutCreateWindow(s);
 	glutDisplayFunc(display);
 	glutTimerFunc(25, update, 0);
+	glutTimerFunc(25, moveEnemy, 0);
 	glutKeyboardFunc(keyboardFunc);
    	glutMainLoop();
    	return 0;
