@@ -3,7 +3,7 @@
 
 A small 2D game written in C++ and created in Visual Studio using GLUT.
 The player is a bee whom has to collect honey in a certain amount of time. 
-However, there is an enemy bug flying around which will try to eat you.
+However, there is an enemy bug flying around which will try to retrieve the honey.
 
 Credits & references:
 --------------------------------------
