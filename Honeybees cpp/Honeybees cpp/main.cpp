@@ -1,25 +1,30 @@
-//Hello world!
-//Please read the LICENSE.md and README.md files for credits, references and the license.
-//Keep in mind that this is my first attempt at writing a program in C++, so any feedback is appreciated.
-//This file originates from the following repository: https://github.com/JasperDre/Honeybees.
+/*
+*Hello world!
+*Please read the LICENSE.md and README.md files for credits, references, and the license.
+*Keep in mind that this is my first attempt at writing a program in C++, so any feedback is appreciated.
+*This file originates from the following repository: https://github.com/JasperDre/Honeybees.
+*/
 
+//Include libraries for this file.
 #include <math.h>			//Standard definitions.
 #include <cstdlib>			//Standard definitions.
 #include <Windows.h>		//Standard definitions.
-#include <GL/glew.h>		//GLUT.
+#include <GL/glew.h>		//GLEW.
 #include <GL/freeglut.h>	//FreeGLUT.
 #include <iostream>			//C++ I/O.
 #include <stdlib.h>			//Standard definitions.
 
+//Define replacements which are called often.
 #define WINDOWWIDTH 768		//Define the width of the window.
 #define WINDOWHEIGHT 768	//Define the height of the window.
 #define PLAYERSIZE (0.2f + playerScore / 164.0f)	//Define the size of the player by a seed (0.2f) and increment it by the score (divided by a correction).
 #define PLAYFIELDSIZE 4.0f	//Define the size of the scene and borders.
 #define CAMERAMOVESPEED 0.1f	//Define the speed which the camera moves by.
-#define HEXAGONCOUNT 42		//Define the count of the honeycombs.
-#define HEXAGONSIZE 0.25f	//Define the size of the honeycombs.
+#define HEXAGONCOUNT 42		//Define the count of the hexagonal cells.
+#define HEXAGONSIZE 0.25f	//Define the size of the hexagonal cells.
 #define ENEMYSIZE 0.4f		//Define the size of the enemy.
 
+//Declare variables.
 using  namespace std;		//Make std accesible.
 
 int windowID;				//Set the id of the window to acces it later on.
@@ -30,10 +35,11 @@ float cameraPosition[2] = { 0,0 };	//Create an array to store the coordinates of
 
 int w = WINDOWWIDTH, h = WINDOWHEIGHT;	//Set a variable to containt the width and height of the window.
 const int font = (int)GLUT_BITMAP_9_BY_15;	//Set a integer to contain the font.
-char s[30];					//time.
-char d[30];					//score.
-double t;
+char s[30];					//Array to store 30 characters.
+char d[30];					//Array to store 30 characters.
+double t;					//Twice the precision of a float.
 
+//Gerenate a random number between a min (a) and max (b) from a seed (rand()).
 float randomFloat(float a, float b) {
    	float random = ((float)rand() / (float)RAND_MAX);
    	float diff = b - a;
@@ -41,6 +47,7 @@ float randomFloat(float a, float b) {
    	return a + r;
 }
 
+//Draw the player sprite using a polygon.
 void drawPlayer(float x, float y) {
 	glColor3f(0.988, 0.815, 0.211);
 	glBegin(GL_POLYGON);
@@ -51,6 +58,7 @@ void drawPlayer(float x, float y) {
 	glEnd();
 }
 
+//Draw the hexagonal cells using a polygon.
 void drawHexagon(float x, float y, float size) {
    	glColor3f(0.980, 0.698, 0.172);
    	glBegin(GL_POLYGON);
@@ -63,6 +71,7 @@ void drawHexagon(float x, float y, float size) {
 	glEnd();
 }
 
+//Draw the enemy using a polygon.
 void drawEnemy(float x, float y, float size) {
 	glColor3f(0.863, 0.078, 0.235);
 	glBegin(GL_POLYGON);
@@ -73,6 +82,7 @@ void drawEnemy(float x, float y, float size) {
 	glEnd();
 }
 
+//Draw the borders using a line between by 4 vertices.
 void drawBorders() {
 	glColor3f(1.0, 0.0, 0.0);
 	glBegin(GL_LINE_LOOP);
@@ -82,7 +92,8 @@ void drawBorders() {
 	glVertex2f(-PLAYFIELDSIZE, -PLAYFIELDSIZE);
 	glEnd();
 }
-   
+
+//Place the hexagonal cells across the field using a random float.
 void setupHexagons() {
    	for (int hexagonCount = 0; hexagonCount < HEXAGONCOUNT; hexagonCount++)
    	{
@@ -91,11 +102,13 @@ void setupHexagons() {
    	}
 }
 
+//Place the enemy in the field using a random float.
 void setupEnemy() {
 	currentEnemyPos[0][0] = randomFloat(-PLAYFIELDSIZE + ENEMYSIZE, PLAYFIELDSIZE - ENEMYSIZE);
 	currentEnemyPos[0][1] = randomFloat(-PLAYFIELDSIZE + ENEMYSIZE, PLAYFIELDSIZE - ENEMYSIZE);
 }
 
+//Check if two items (item 1 and item 2) have less than a certain distance (size) and return a true or false.
 bool doesCollide(float item1[], float item2[], float size) {
    	float diffX = item1[0] - item2[0];
    	float diffY = item1[1] - item2[1];
@@ -103,8 +116,10 @@ bool doesCollide(float item1[], float item2[], float size) {
    	return distance < size;
 }
 
+//Check if the hexagonal cells are colliding using the boolean above. If so, change the position of one of them.
 void updateHexagons() {
    	for (int hexagonOuter = 0; hexagonOuter < HEXAGONCOUNT - 1; hexagonOuter++) {
+		//Only check the distance from the last one, which is more efficient.
    		for (int hexagonInner = hexagonOuter + 1; hexagonInner < HEXAGONCOUNT; hexagonInner++) {
    			if (doesCollide(currentHexagonPos[hexagonOuter], currentHexagonPos[hexagonInner], HEXAGONSIZE)) {
 				currentHexagonPos[hexagonInner][0] = randomFloat(-PLAYFIELDSIZE + HEXAGONSIZE, PLAYFIELDSIZE - HEXAGONSIZE);
@@ -114,6 +129,7 @@ void updateHexagons() {
    	}
 }
 
+//Check if the player collides with a hexagonal cell or the enemy.
 void checkPlayerCollision() {
 	for (int hexagonIndex = 0; hexagonIndex < HEXAGONCOUNT; hexagonIndex++) {
 		if (doesCollide(cameraPosition, currentHexagonPos[hexagonIndex], (HEXAGONSIZE + PLAYERSIZE) / 2)) {
@@ -129,6 +145,7 @@ void checkPlayerCollision() {
 	}
 }
 
+//Move the enemy using a random float every time that has been set.
 void moveEnemy(int value) {
 	currentEnemyPos[0][0] = (currentEnemyPos[0][0] > PLAYFIELDSIZE - ENEMYSIZE) ? -PLAYFIELDSIZE + ENEMYSIZE : currentEnemyPos[0][0] + randomFloat(-0.01, 0.1);
 	currentEnemyPos[0][1] = (currentEnemyPos[0][1] > PLAYFIELDSIZE - ENEMYSIZE) ? -PLAYFIELDSIZE + ENEMYSIZE : currentEnemyPos[0][1] + randomFloat(-0.01, 0.1);
@@ -136,6 +153,7 @@ void moveEnemy(int value) {
 	glutPostRedisplay();
 }
 
+//Resize the window?
 static void resize(int width, int height)
 {
 	const float ar = (float)width / (float)height;
@@ -148,6 +166,8 @@ static void resize(int width, int height)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
+
+//Set the projection to orthographic.
 void setOrthographicProjection() {
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
@@ -157,11 +177,15 @@ void setOrthographicProjection() {
 	glTranslatef(0, -h, 0);
 	glMatrixMode(GL_MODELVIEW);
 }
+
+//Reset the projection.
 void resetPerspectiveProjection() {
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 }
+
+//Render the characters from a bitmap.
 void renderBitmapString(float x, float y, void *font, const char *string) {
 	const char *c;
 	glRasterPos2f(x, y);
@@ -170,6 +194,7 @@ void renderBitmapString(float x, float y, void *font, const char *string) {
 	}
 }
 
+//Switch function to check which key is pressed and trigger an action.
 void keyboardFunc(unsigned char key, int x, int y) {
 	switch (key)
 	{
@@ -246,7 +271,7 @@ int main(int argc, char **argv) {
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
    	glutInitWindowSize(WINDOWWIDTH, WINDOWHEIGHT);
    	glutInitWindowPosition(0, 0);
-   	char s[4096] = "Honeybees";
+   	char s[30] = "Honeybees";
 	windowID = glutCreateWindow(s);
 	glutDisplayFunc(display);
 	glutTimerFunc(25, update, 0);
