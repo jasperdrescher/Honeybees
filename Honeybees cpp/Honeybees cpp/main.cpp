@@ -225,7 +225,7 @@ void display(void) {
 	gluLookAt(cameraPosition[0], cameraPosition[1], -1, cameraPosition[0], cameraPosition[1], 0, 0.0, 1.0, 0.0);	//Modify the camera.
    	updateHexagons();
 	checkPlayerCollision();
-   	glClearColor(1.000, 0.992, 0.878, 0);	//Set the background colour.
+   	glClearColor(1.000, 0.992, 0.878, 0);	//Set the background color.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		//Clear buffers to preset values. 
 	resetPerspectiveProjection();
    	for (int hexagonCount = 0; hexagonCount < HEXAGONCOUNT; hexagonCount++) {	//Render the hexagonal cells.
@@ -237,7 +237,7 @@ void display(void) {
 	setOrthographicProjection();
 	glPushMatrix();
 	glLoadIdentity();
-	glColor3d(0.0, 0.0, 1.0);	//Set the colour of the text.
+	glColor3d(0.0, 0.0, 1.0);	//Set the color of the text.
 	renderBitmapString(0.1, 15, (void*)font, scoreText);
 	renderBitmapString(0.1, 30, (void*)font, timeText);
 	glPopMatrix();
