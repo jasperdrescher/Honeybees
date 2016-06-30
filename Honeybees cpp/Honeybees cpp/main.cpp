@@ -1,7 +1,7 @@
 /*
 * Please read the LICENSE.md and README.md files for credits, references, and the license.
 * Keep in mind that this is my first attempt at writing a program in C++, so any feedback is appreciated.
-* This file and its repository are avaible from: https://github.com/JasperDre/Honeybees.
+* This file and its repository are available from: https://github.com/JasperDre/Honeybees.
 */
 
 //Include libraries for this file.
@@ -13,10 +13,10 @@
 #include <iostream>			//C++ I/O.
 #include <stdlib.h>			//Standard definitions.
 
-//Define sybolic replacements which are called frequently.
+//Define symbolic replacements which are called frequently.
 #define WINDOWWIDTH 768		//Define the width of the window.
 #define WINDOWHEIGHT 768	//Define the height of the window.
-#define PLAYERSIZE (0.2f + playerScore / 164.0f)	//Define the size of the player by a seed (0.2f) and increment it by the score (divided by a correction).
+#define PLAYERSIZE (0.2f + playerScore / 164.0f)	//Define the size of the player by a seed (0.2f) and increment it by the score (divided by a value).
 #define PLAYFIELDSIZE 4.0f	//Define the size of the scene and borders.
 #define CAMERAMOVESPEED 0.1f	//Define the speed which the camera moves by.
 #define HEXAGONCOUNT 42		//Define the count of the hexagonal cells.
@@ -256,6 +256,7 @@ void update(int value) {
 	glutPostRedisplay();
 }
 
+//Start the main loop.
 int main(int argc, char **argv) {
 	cout << "Welcome to Honeybees.\n\
 	- Use your keyboard to move.\n\
