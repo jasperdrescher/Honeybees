@@ -7,10 +7,11 @@ However, there is an enemy bug flying around which will try to retrieve the hone
 
 NOTE: build in 32-bit.
 
-Credits & references:
---------------------------------------
-
+## Libraries
 - **FreeGLUT**: http://freeglut.sourceforge.net/ `John F. Fay, John Tsiombikas, and Diederick C. Niehorster`.
+- **GLEW**: http://glew.sourceforge.net/ `Milan Ikits, Marcelo Magallon, and Nigel Stewart`.
+
+## References
 - **Adding colors**: http://www.spacesocket.com/forum/thread-6655.html `North`.
 - **color chart**: http://prideout.net/archive/colors.php `Philip Rideout`.
 - **Drawing polygons**: https://en.wikibooks.org/wiki/OpenGL_Programming/GLStart/Tut3#Drawing_Polygons `Wikibooks`.
@@ -18,5 +19,3 @@ Credits & references:
 - **Keyboard input**: http://www-bcf.usc.edu/~jbarbic/cs599-s11/openGLHelloWorld/openGLHelloWorld.cpp `Jernej Barbic`.
 - **Using cout**: https://www.cs.umd.edu/class/spring2013/cmsc425/OpenGL/OpenGLSamples/OpenGL-2D-Sample/opengl-2D-sample.cpp `Dave Mount`.
 - **Drawing text**: http://www.programming-techniques.com/2012/05/font-rendering-in-glut-using-bitmap.html `Bibek Subedi`.
-
-Project made by [JasperDre](https://github.com/JasperDre)
